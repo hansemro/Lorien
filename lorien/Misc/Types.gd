@@ -7,6 +7,7 @@ enum Tool {
 	RECTANGLE,
 	LINE,
 	ERASER,
+	SUPERERASER
 	SELECT,
 }
 

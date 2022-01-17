@@ -13,6 +13,7 @@
 [ext_resource path="res://InfiniteCanvas/Tools/RectangleTool.gd" type="Script" id=11]
 [ext_resource path="res://InfiniteCanvas/InfiniteCanvasGrid.gd" type="Script" id=12]
 [ext_resource path="res://InfiniteCanvas/grid.shader" type="Shader" id=15]
+[ext_resource path="res://InfiniteCanvas/Tools/SuperEraserTool.gd" type="Script" id=16]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 10 )
@@ -48,6 +49,11 @@ pressure_curve = ExtResource( 3 )
 [node name="SelectionTool" type="Node" parent="."]
 script = ExtResource( 7 )
 cursor_path = NodePath("../Viewport/SelectionCursor")
+selection_rectangle_path = NodePath("../SelectionRectangle")
+
+[node name="SuperEraserTool" type="Node" parent="."]
+script = ExtResource( 16 )
+cursor_path = NodePath("../Viewport/BrushCursor")
 selection_rectangle_path = NodePath("../SelectionRectangle")
 
 [node name="SelectionRectangle" type="Node2D" parent="."]
