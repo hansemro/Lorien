@@ -9,6 +9,7 @@ const ERASER_SIZE_FACTOR = 1.25
 
 # -------------------------------------------------------------------------------------------------
 onready var _brush_tool: BrushTool = $BrushTool
+onready var _super_eraser_tool: SuperEraserTool = $SuperEraserTool
 onready var _rectangle_tool: RectangleTool = $RectangleTool
 onready var _line_tool: LineTool = $LineTool
 onready var _selection_tool: SelectionTool = $SelectionTool
@@ -131,6 +132,9 @@ func use_tool(tool_type: int) -> void:
 			_brush_tool.mode = BrushTool.Mode.ERASE
 			_active_tool = _brush_tool
 			_use_optimizer = true
+		Types.Tool.SUPERERASER:
+			_active_tool = _super_eraser_tool
+			_use_optimizer = false
 		Types.Tool.SELECT:
 			_active_tool = _selection_tool
 			_use_optimizer = false
