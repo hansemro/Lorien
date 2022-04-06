@@ -47,20 +47,12 @@ func _process(delta: float) -> void:
 				texture.create_from_image(image)
 				test_sprite.set_texture(texture)
 				test_sprite.position = _cursor.global_position
-				_canvas.add_child(test_sprite)
+				_add_undoredo_action_for_image_paste(test_sprite)
 			else:
 				print("no valid image in clipboard")
 		else:
 			print("Cannot paste on unsupported platform")
 		_mode = Mode.PASTE_DONE
-
-# -------------------------------------------------------------------------------------------------
-func set_mode(mode: int) -> void:
-	_mode = mode
-
-# -------------------------------------------------------------------------------------------------
-func get_mode() -> int:
-	return _mode
 
 # -------------------------------------------------------------------------------------------------
 func _xxd_to_byte_array(xxd_output: String) -> PoolByteArray:
@@ -71,3 +63,23 @@ func _xxd_to_byte_array(xxd_output: String) -> PoolByteArray:
 			byte = ("0x" + byte).hex_to_int()
 			arr.append(byte)
 	return arr
+
+# -------------------------------------------------------------------------------------------------
+func add_image(image_sprite: Sprite) -> void:
+	_canvas._strokes_parent.add_child(image_sprite)
+	_canvas._current_project.strokes.append(image_sprite)
+
+# -------------------------------------------------------------------------------------------------
+func delete_image(image_sprite: Sprite) -> void:
+	var index = _canvas._current_project.strokes.find(image_sprite)
+	_canvas._current_project.strokes.remove(index)
+	_canvas._strokes_parent.remove_child(image_sprite)
+
+# ------------------------------------------------------------------------------------------------
+func _add_undoredo_action_for_image_paste(image_sprite: Sprite) -> void:
+	var project: Project = ProjectManager.get_active_project()
+	project.undo_redo.create_action("Paste Image")
+	project.undo_redo.add_do_method(self, "add_image", image_sprite)
+	project.undo_redo.add_undo_method(self, "delete_image", image_sprite)
+	project.undo_redo.commit_action()
+	project.dirty = true
