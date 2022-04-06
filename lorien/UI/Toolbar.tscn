@@ -45,9 +45,6 @@ rect_min_size = Vector2( 0, 40 )
 theme = ExtResource( 15 )
 custom_styles/panel = SubResource( 1 )
 script = ExtResource( 3 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Left" type="HBoxContainer" parent="."]
 anchor_bottom = 1.0
@@ -55,9 +52,6 @@ margin_right = 578.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 12
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VSeparator" type="VSeparator" parent="Left"]
 margin_right = 4.0
@@ -238,7 +232,7 @@ margin_left = 342.0
 margin_top = 11.0
 margin_right = 360.0
 margin_bottom = 29.0
-rect_pivot_offset = Vector2( -362, -18 )
+rect_pivot_offset = Vector2( -248, 408 )
 hint_tooltip = "TOOLBAR_TOOLTIP_SUPER_ERASER_TOOL"
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -301,6 +295,21 @@ margin_right = 608.0
 margin_bottom = 27.0
 custom_fonts/font = ExtResource( 14 )
 text = "12"
+
+[node name="ImageRectToolButton" type="TextureButton" parent="Left"]
+margin_left = 620.0
+margin_top = 11.0
+margin_right = 638.0
+margin_bottom = 29.0
+rect_pivot_offset = Vector2( -248, 408 )
+hint_tooltip = "TOOLBAR_TOOLTIP_IMAGE_RECT_TOOL"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+toggle_mode = true
+texture_normal = ExtResource( 19 )
+script = ExtResource( 13 )
+hover_tint = Color( 0.662745, 0.945098, 0.87451, 1 )
+pressed_tint = Color( 0.572549, 1, 0.894118, 1 )
 
 [node name="Right" type="HBoxContainer" parent="."]
 anchor_left = 1.0
@@ -379,6 +388,7 @@ custom_styles/separator = SubResource( 2 )
 [connection signal="pressed" from="Left/SuperEraserToolButton" to="." method="_on_SuperEraserToolButton_pressed"]
 [connection signal="pressed" from="Left/ColorButton" to="." method="_on_ColorButton_pressed"]
 [connection signal="value_changed" from="Left/BrushSizeSlider" to="." method="_on_BrushSizeSlider_value_changed"]
+[connection signal="pressed" from="Left/ImageRectToolButton" to="." method="_on_ImageRectToolButton_pressed"]
 [connection signal="pressed" from="Right/BackgroundColorButton" to="." method="_on_BackgroundColorButton_pressed"]
 [connection signal="toggled" from="Right/GridButton" to="." method="_on_GridButton_toggled"]
 [connection signal="toggled" from="Right/FullscreenButton" to="." method="_on_FullscreenButton_toggled"]

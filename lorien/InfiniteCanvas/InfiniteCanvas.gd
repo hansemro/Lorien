@@ -11,6 +11,7 @@ onready var _brush_tool: BrushTool = $BrushTool
 onready var _super_eraser_tool: SuperEraserTool = $SuperEraserTool
 onready var _rectangle_tool: RectangleTool = $RectangleTool
 onready var _line_tool: LineTool = $LineTool
+onready var _image_rect_tool: ImageRectTool = $ImageRectTool
 onready var _selection_tool: SelectionTool = $SelectionTool
 onready var _active_tool: CanvasTool = _brush_tool
 onready var _strokes_parent: Node2D = $Viewport/Strokes
@@ -93,6 +94,9 @@ func use_tool(tool_type: int) -> void:
 			_use_optimizer = false
 		Types.Tool.SELECT:
 			_active_tool = _selection_tool
+			_use_optimizer = false
+		Types.Tool.IMAGERECT:
+			_active_tool = _image_rect_tool
 			_use_optimizer = false
 			
 	_active_tool.enabled = true

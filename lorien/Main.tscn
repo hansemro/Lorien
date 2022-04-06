@@ -98,10 +98,10 @@ __meta__ = {
 }
 
 [node name="ColorPicker" type="ColorPicker" parent="BackgroundColorPickerPopup/PanelContainer"]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 313.0
-margin_bottom = 408.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 317.0
+margin_bottom = 412.0
 edit_alpha = false
 presets_enabled = false
 presets_visible = false
@@ -136,12 +136,13 @@ margin_left = -385.0
 margin_top = -216.5
 margin_right = 385.0
 margin_bottom = 216.5
+rect_min_size = Vector2( 300, 105 )
 theme = ExtResource( 8 )
 popup_exclusive = true
 access = 2
 filters = PoolStringArray( "*.lorien" )
-current_dir = "/Projects/Other/Lorien/lorien"
-current_path = "/Projects/Other/Lorien/lorien/"
+current_dir = "/home/hansemro/Documents/Lorien/lorien"
+current_path = "/home/hansemro/Documents/Lorien/lorien/"
 __meta__ = {
 "_edit_lock_": true
 }
@@ -197,11 +198,12 @@ margin_left = -385.0
 margin_top = -216.5
 margin_right = 385.0
 margin_bottom = 216.5
+rect_min_size = Vector2( 300, 105 )
 theme = ExtResource( 8 )
 popup_exclusive = true
 access = 2
-current_dir = "/Projects/Other/Lorien/lorien"
-current_path = "/Projects/Other/Lorien/lorien/"
+current_dir = "/home/hansemro/Documents/Lorien/lorien"
+current_path = "/home/hansemro/Documents/Lorien/lorien/"
 
 [node name="UnsavedChangesDialog" parent="." instance=ExtResource( 7 )]
 visible = false

@@ -41,6 +41,7 @@ onready var _tool_btn_line: TextureButton = $Left/LineToolButton
 onready var _tool_btn_eraser: TextureButton = $Left/EraserToolButton
 onready var _tool_btn_super_eraser: TextureButton = $Left/SuperEraserToolButton
 onready var _tool_btn_selection: TextureButton = $Left/SelectionToolButton
+onready var _tool_btn_image_rect: TextureButton = $Left/ImageRectToolButton
 
 var _last_active_tool_button: TextureButton
 
@@ -70,6 +71,7 @@ func enable_tool(tool_type: int) -> void:
 		Types.Tool.SUPERERASER: btn = _tool_btn_super_eraser
 		Types.Tool.SELECT: btn = _tool_btn_selection
 		Types.Tool.RECTANGLE: btn = _tool_btn_rectangle
+		Types.Tool.IMAGERECT: btn = _tool_btn_image_rect
 	
 	btn.toggle()
 	_change_active_tool_button(btn)
@@ -150,6 +152,11 @@ func _on_EraserToolButton_pressed():
 func _on_SuperEraserToolButton_pressed():
 	_change_active_tool_button(_tool_btn_super_eraser)
 	emit_signal("tool_changed", Types.Tool.SUPERERASER)
+
+# -------------------------------------------------------------------------------------------------
+func _on_ImageRectToolButton_pressed():
+	_change_active_tool_button(_tool_btn_image_rect)
+	emit_signal("tool_changed", Types.Tool.IMAGERECT)
 
 # -------------------------------------------------------------------------------------------------
 func _on_SelectToolButton_pressed():
