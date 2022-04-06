@@ -278,7 +278,8 @@ func use_project(project: Project) -> void:
 	for stroke in _current_project.strokes:
 		_strokes_parent.add_child(stroke)
 		info.stroke_count += 1
-		info.point_count += stroke.points.size()
+		if stroke.get("points"):
+			info.point_count += stroke.points.size()
 	
 	_grid.update()
 	
