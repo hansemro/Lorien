@@ -17,6 +17,7 @@ onready var _strokes_parent: Node2D = $Viewport/Strokes
 onready var _camera: Camera2D = $Viewport/Camera2D
 onready var _viewport: Viewport = $Viewport
 onready var _grid: InfiniteCanvasGrid = $Viewport/Grid
+onready var _gdclip = preload("res://gdclip.gdns").new()
 
 var info := Types.CanvasInfo.new()
 var _is_enabled := false
@@ -61,6 +62,48 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("delete_selected_strokes"):
 		if _active_tool == _selection_tool:
 			_delete_selected_strokes()
+
+	if Input.is_action_just_pressed("paste_strokes"):
+		if _active_tool != _selection_tool:
+			paste_image()
+
+# -------------------------------------------------------------------------------------------------
+func paste_image() -> void:
+	assert(_gdclip)
+	print("GDClip Paste Action")
+	if _gdclip.has_image():
+		var image_byte_array = _gdclip.get_image_as_pbarray()
+		var size = _gdclip.get_image_size()
+		var test_sprite = Sprite.new()
+		var texture = ImageTexture.new()
+		var image = Image.new()
+		print("Size from clipboard: %s" % str(size))
+		image.create_from_data(size[0], size[1], false, Image.FORMAT_RGBA8, image_byte_array)
+		print("Size from image: %s" % str(image.get_size()))
+		texture.create_from_image(image)
+		test_sprite.set_texture(texture)
+		test_sprite.position = _brush_tool._cursor.global_position
+		_add_undoredo_action_for_image_paste(test_sprite)
+
+# -------------------------------------------------------------------------------------------------
+func add_image(image_sprite: Sprite) -> void:
+	_strokes_parent.add_child(image_sprite)
+	_current_project.strokes.append(image_sprite)
+
+# -------------------------------------------------------------------------------------------------
+func delete_image(image_sprite: Sprite) -> void:
+	var index = _current_project.strokes.find(image_sprite)
+	_current_project.strokes.remove(index)
+	_strokes_parent.remove_child(image_sprite)
+
+# ------------------------------------------------------------------------------------------------
+func _add_undoredo_action_for_image_paste(image_sprite: Sprite) -> void:
+	var project: Project = ProjectManager.get_active_project()
+	project.undo_redo.create_action("Paste Image")
+	project.undo_redo.add_do_method(self, "add_image", image_sprite)
+	project.undo_redo.add_undo_method(self, "delete_image", image_sprite)
+	project.undo_redo.commit_action()
+	project.dirty = true
 
 # -------------------------------------------------------------------------------------------------
 func center_to_mouse() -> void:
