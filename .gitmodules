@@ -1,0 +1,3 @@
+[submodule "lorien/GDClip"]
+	path = lorien/GDClip
+	url = https://github.com/hansemro/GDClip
