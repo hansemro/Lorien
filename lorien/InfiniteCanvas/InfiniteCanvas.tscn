@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://InfiniteCanvas/InfiniteCanvas.gd" type="Script" id=1]
 [ext_resource path="res://InfiniteCanvas/PanZoomCamera.gd" type="Script" id=2]
@@ -14,6 +14,7 @@
 [ext_resource path="res://InfiniteCanvas/InfiniteCanvasGrid.gd" type="Script" id=12]
 [ext_resource path="res://InfiniteCanvas/grid.shader" type="Shader" id=15]
 [ext_resource path="res://InfiniteCanvas/Tools/SuperEraserTool.gd" type="Script" id=16]
+[ext_resource path="res://gdclip.gdns" type="Script" id=17]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 10 )
@@ -55,6 +56,9 @@ selection_rectangle_path = NodePath("../SelectionRectangle")
 script = ExtResource( 16 )
 cursor_path = NodePath("../Viewport/BrushCursor")
 selection_rectangle_path = NodePath("../SelectionRectangle")
+
+[node name="GDClip" type="Node" parent="."]
+script = ExtResource( 17 )
 
 [node name="SelectionRectangle" type="Node2D" parent="."]
 material = SubResource( 1 )

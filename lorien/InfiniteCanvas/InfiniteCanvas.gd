@@ -17,7 +17,7 @@ onready var _strokes_parent: Node2D = $Viewport/Strokes
 onready var _camera: Camera2D = $Viewport/Camera2D
 onready var _viewport: Viewport = $Viewport
 onready var _grid: InfiniteCanvasGrid = $Viewport/Grid
-onready var _gdclip = preload("res://gdclip.gdns").new()
+onready var _gdclip: Node = $GDClip
 
 var info := Types.CanvasInfo.new()
 var _is_enabled := false
