@@ -55,7 +55,6 @@ selection_rectangle_path = NodePath("../SelectionRectangle")
 [node name="SuperEraserTool" type="Node" parent="."]
 script = ExtResource( 16 )
 cursor_path = NodePath("../Viewport/BrushCursor")
-selection_rectangle_path = NodePath("../SelectionRectangle")
 
 [node name="GDClip" type="Node" parent="."]
 script = ExtResource( 17 )
