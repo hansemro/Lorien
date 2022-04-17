@@ -3,6 +3,7 @@ extends CanvasTool
 
 # -------------------------------------------------------------------------------------------------
 const BRUSH_STROKE = preload("res://BrushStroke/BrushStroke.tscn")
+const IMAGE_STROKE = preload("res://BrushStroke/ImageStroke.tscn")
 
 const MAX_FLOAT := 2147483646.0
 const MIN_FLOAT := -2147483646.0
@@ -125,10 +126,13 @@ func compute_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 		var bounding_box: Rect2 = _bounding_box_cache[stroke]
 		var is_inside_selection_rect := false
 		if selection_rect.intersects(bounding_box):
-			for point in stroke.points:
-				if selection_rect.has_point(_calc_abs_stroke_point(point, stroke)):
-					is_inside_selection_rect = true
-					break
+			if stroke.name == "BrushStroke":
+				for point in stroke.points:
+					if selection_rect.has_point(_calc_abs_stroke_point(point, stroke)):
+						is_inside_selection_rect = true
+						break
+			elif stroke.name == "ImageStroke":
+				is_inside_selection_rect = true
 		_set_stroke_selected(stroke, is_inside_selection_rect)
 	_canvas.info.selected_lines = get_selected_strokes().size()
 
@@ -183,11 +187,11 @@ func _build_bounding_boxes() -> void:
 		_bounding_box_cache[stroke] = bounding_box
 
 # ------------------------------------------------------------------------------------------------
-func _calc_abs_stroke_point(p: Vector2, stroke: BrushStroke) -> Vector2:
+func _calc_abs_stroke_point(p: Vector2, stroke) -> Vector2:
 	return (p + stroke.position - _canvas.get_camera_offset()) / _canvas.get_camera_zoom()
 
 # ------------------------------------------------------------------------------------------------
-func _set_stroke_selected(stroke: BrushStroke, is_inside_rect: bool = true) -> void:
+func _set_stroke_selected(stroke, is_inside_rect: bool = true) -> void:
 	if is_inside_rect:
 		if stroke.is_in_group(GROUP_SELECTED_STROKES):
 			stroke.modulate = Color.white
