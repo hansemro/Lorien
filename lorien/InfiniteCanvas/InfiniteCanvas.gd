@@ -3,6 +3,7 @@ class_name InfiniteCanvas
 
 # -------------------------------------------------------------------------------------------------
 const BRUSH_STROKE = preload("res://BrushStroke/BrushStroke.tscn")
+const IMAGE_STROKE = preload("res://BrushStroke/ImageStroke.tscn")
 const PLAYER = preload("res://Misc/Player/Player.tscn")
 const ERASER_SIZE_FACTOR = 1.25
 
@@ -24,7 +25,7 @@ var _is_enabled := false
 var _background_color: Color
 var _brush_color := Config.DEFAULT_BRUSH_COLOR
 var _brush_size := Config.DEFAULT_BRUSH_SIZE setget set_brush_size
-var _current_stroke: BrushStroke
+var _current_stroke
 var _current_project: Project
 var _use_optimizer := true
 var _player: Player = null
@@ -71,19 +72,20 @@ func _process(delta: float) -> void:
 func paste_image() -> void:
 	assert(_gdclip)
 	print("GDClip Paste Action")
+	print("GDClip Library Version: " + _gdclip.get_version())
 	if _gdclip.has_image():
 		var image_byte_array = _gdclip.get_image_as_pbarray()
 		var size = _gdclip.get_image_size()
-		var test_sprite = Sprite.new()
+		var sprite = IMAGE_STROKE.instance()
 		var texture = ImageTexture.new()
 		var image = Image.new()
 		print("Size from clipboard: %s" % str(size))
 		image.create_from_data(size[0], size[1], false, Image.FORMAT_RGBA8, image_byte_array)
 		print("Size from image: %s" % str(image.get_size()))
 		texture.create_from_image(image)
-		test_sprite.set_texture(texture)
-		test_sprite.position = _brush_tool._cursor.global_position
-		_add_undoredo_action_for_image_paste(test_sprite)
+		sprite.set_texture(texture)
+		sprite.position = _brush_tool._cursor.global_position
+		_add_undoredo_action_for_image_paste(sprite)
 
 # -------------------------------------------------------------------------------------------------
 func add_image(image_sprite: Sprite) -> void:
@@ -375,7 +377,7 @@ func _delete_selected_strokes() -> void:
 		_current_project.dirty = true
 
 # -------------------------------------------------------------------------------------------------
-func _do_delete_stroke(stroke: BrushStroke) -> void:
+func _do_delete_stroke(stroke) -> void:
 	var index := _current_project.strokes.find(stroke)
 	_current_project.strokes.remove(index)
 	_strokes_parent.remove_child(stroke)
@@ -385,7 +387,7 @@ func _do_delete_stroke(stroke: BrushStroke) -> void:
 # FIXME: this adds strokes at the back and does not preserve stroke order; not sure how to do that except saving before
 # and after versions of the stroke arrays which is a nogo.
 # -------------------------------------------------------------------------------------------------
-func _undo_delete_stroke(stroke: BrushStroke) -> void:
+func _undo_delete_stroke(stroke) -> void:
 	_current_project.strokes.append(stroke)
 	_strokes_parent.add_child(stroke)
 	info.point_count += stroke.points.size()
