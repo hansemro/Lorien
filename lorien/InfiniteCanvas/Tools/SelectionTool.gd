@@ -130,12 +130,12 @@ func compute_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 		print("bbox intersects selection: %s" % str(selection_rect.intersects(bounding_box)))
 		print("stroke.name == ImageStroke: %s" % str("ImageStroke" in stroke.name))
 		if selection_rect.intersects(bounding_box):
-			if stroke.name == "BrushStroke":
+			if "BrushStroke" in stroke.name:
 				for point in stroke.points:
 					if selection_rect.has_point(_calc_abs_stroke_point(point, stroke)):
 						is_inside_selection_rect = true
 						break
-			elif stroke.name == "ImageStroke":
+			elif "ImageStroke" in stroke.name:
 				is_inside_selection_rect = true
 				print("Adding image %s to selected strokes" % stroke.get_instance_id())
 		_set_stroke_selected(stroke, is_inside_selection_rect)
