@@ -30,8 +30,8 @@ func clear() -> void:
 	eraser_stroke_indices.clear()
 
 # -------------------------------------------------------------------------------------------------
-func add_stroke(stroke: BrushStroke) -> void:
-	if stroke.eraser:
+func add_stroke(stroke) -> void:
+	if "BrushStroke" in stroke.name and stroke.eraser:
 		eraser_stroke_indices.append(strokes.size())
 	strokes.append(stroke)
 	dirty = true
@@ -39,8 +39,8 @@ func add_stroke(stroke: BrushStroke) -> void:
 # -------------------------------------------------------------------------------------------------
 func remove_last_stroke() -> void:
 	if !strokes.empty():
-		var s: BrushStroke = strokes.pop_back()
-		if s.eraser:
+		var s = strokes.pop_back()
+		if "BrushStroke" in s.name and s.eraser:
 			eraser_stroke_indices.pop_back()
 
 # -------------------------------------------------------------------------------------------------

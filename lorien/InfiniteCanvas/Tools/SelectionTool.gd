@@ -157,7 +157,7 @@ func _paste_strokes(strokes: Array) -> void:
 	# Duplicate the strokes 
 	var duplicates := []
 	for stroke in strokes:
-		var dup := _duplicate_stroke(stroke, offset)
+		var dup = _duplicate_stroke(stroke, offset)
 		dup.add_to_group(GROUP_SELECTED_STROKES)
 		dup.modulate = Config.DEFAULT_SELECTION_COLOR
 		duplicates.append(dup)
@@ -166,16 +166,24 @@ func _paste_strokes(strokes: Array) -> void:
 	print("Pasted %d strokes (offset: %s)" % [strokes.size(), offset])
 
 # ------------------------------------------------------------------------------------------------
-func _duplicate_stroke(stroke: BrushStroke, offset: Vector2) -> BrushStroke:	
-	var dup: BrushStroke = BRUSH_STROKE.instance()
-	dup.global_position = stroke.global_position
-	dup.eraser = stroke.eraser
-	dup.size = stroke.size
-	dup.color = stroke.color
-	dup.pressures = stroke.pressures.duplicate()
-	for point in stroke.points:
-		dup.points.append(point + offset)
-	return dup
+func _duplicate_stroke(stroke, offset: Vector2):
+	if "BrushStroke" in stroke.name:
+		var dup = BRUSH_STROKE.instance()
+		dup.global_position = stroke.global_position
+		dup.eraser = stroke.eraser
+		dup.size = stroke.size
+		dup.color = stroke.color
+		dup.pressures = stroke.pressures.duplicate()
+		for point in stroke.points:
+			dup.points.append(point + offset)
+		return dup
+	elif "ImageStroke" in stroke.name:
+		var dup = IMAGE_STROKE.instance()
+		dup.global_position = stroke.global_position + offset
+		dup.texture = stroke.texture
+		dup.top_left_pos = stroke.top_left_pos
+		dup.bottom_right_pos = stroke.bottom_right_pos
+		return dup
 
 # ------------------------------------------------------------------------------------------------
 func _modify_strokes_colors(strokes: Array, color: Color) -> void:	
