@@ -188,7 +188,8 @@ func _duplicate_stroke(stroke, offset: Vector2):
 # ------------------------------------------------------------------------------------------------
 func _modify_strokes_colors(strokes: Array, color: Color) -> void:	
 	for stroke in strokes:
-		stroke.color = color
+		if "BrushStroke" in stroke.name:
+			stroke.color = color
 
 # ------------------------------------------------------------------------------------------------
 func _build_bounding_boxes() -> void:
