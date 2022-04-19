@@ -379,10 +379,12 @@ func _delete_selected_strokes() -> void:
 # -------------------------------------------------------------------------------------------------
 func _do_delete_stroke(stroke) -> void:
 	var index := _current_project.strokes.find(stroke)
+	print("Deleting stroke %s" % _current_project.strokes[index].get_instance_id())
 	_current_project.strokes.remove(index)
 	_strokes_parent.remove_child(stroke)
 	info.point_count -= stroke.points.size()
 	info.stroke_count -= 1
+	print("Remaining strokes: %s" % str(_current_project.strokes))
 
 # FIXME: this adds strokes at the back and does not preserve stroke order; not sure how to do that except saving before
 # and after versions of the stroke arrays which is a nogo.

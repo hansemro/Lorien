@@ -24,17 +24,21 @@ func _ready():
 	points.append(position)
 	points.append(top_left_pos)
 	points.append(bottom_right_pos)
+	print("ImageStroke: _ready for instance %s" % get_instance_id())
+	print("  position: %s" % str(position))
+	print("  top_left_pos: %s" % str(top_left_pos))
+	print("  bottom_right_pos: %s" % str(bottom_right_pos))
 
 # ------------------------------------------------------------------------------------------------
 func _on_VisibilityNotifier2D_viewport_entered(viewport: Viewport) -> void: 
 	add_to_group(GROUP_ONSCREEN)
-	print("ImageStroke ONSCREEN")
+	print("ImageStroke %s ONSCREEN" % get_instance_id())
 	visible = true
 
 # ------------------------------------------------------------------------------------------------
 func _on_VisibilityNotifier2D_viewport_exited(viewport: Viewport) -> void:
 	remove_from_group(GROUP_ONSCREEN)
-	print("ImageStroke OFFSCREEN")
+	print("ImageStroke %s OFFSCREEN" % get_instance_id())
 	visible = false
 
 # -------------------------------------------------------------------------------------------------

@@ -64,6 +64,7 @@ func _add_undoredo_action_for_erased_strokes() -> void:
 		project.undo_redo.create_action("Erase Stroke")
 		for stroke in _removed_strokes:
 			_removed_strokes.erase(stroke)
+			print("Attempting to remove stroke %s" % stroke.get_instance_id())
 			project.undo_redo.add_do_method(_canvas, "_do_delete_stroke", stroke)
 			project.undo_redo.add_undo_method(_canvas, "_undo_delete_stroke", stroke)
 		project.undo_redo.commit_action()

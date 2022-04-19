@@ -122,9 +122,13 @@ func _process(delta: float) -> void:
 # ------------------------------------------------------------------------------------------------
 func compute_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 	var selection_rect : Rect2 = Utils.calculate_rect(start_pos, end_pos)
+	print("selection_rect: %s" % str(selection_rect))
 	for stroke in _canvas.get_strokes_in_camera_frustrum():
 		var bounding_box: Rect2 = _bounding_box_cache[stroke]
+		print("%s bbox: %s" % [stroke.get_instance_id(), str(bounding_box)])
 		var is_inside_selection_rect := false
+		print("bbox intersects selection: %s" % str(selection_rect.intersects(bounding_box)))
+		print("stroke.name == ImageStroke: %s" % str("ImageStroke" in stroke.name))
 		if selection_rect.intersects(bounding_box):
 			if stroke.name == "BrushStroke":
 				for point in stroke.points:
@@ -133,6 +137,7 @@ func compute_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 						break
 			elif stroke.name == "ImageStroke":
 				is_inside_selection_rect = true
+				print("Adding image %s to selected strokes" % stroke.get_instance_id())
 		_set_stroke_selected(stroke, is_inside_selection_rect)
 	_canvas.info.selected_lines = get_selected_strokes().size()
 
@@ -192,7 +197,9 @@ func _calc_abs_stroke_point(p: Vector2, stroke) -> Vector2:
 
 # ------------------------------------------------------------------------------------------------
 func _set_stroke_selected(stroke, is_inside_rect: bool = true) -> void:
+	print("_set_stroke_selected(%s, %s)" % [stroke.get_instance_id(), str(is_inside_rect)])
 	if is_inside_rect:
+		print("stroke is in GROUP_SELECTED_STROKES: %s" % str(stroke.is_in_group(GROUP_SELECTED_STROKES)))
 		if stroke.is_in_group(GROUP_SELECTED_STROKES):
 			stroke.modulate = Color.white
 			stroke.add_to_group(GROUP_MARKED_FOR_DESELECTION)
