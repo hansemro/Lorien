@@ -58,15 +58,23 @@ static func save_project(project: Project) -> void:
 		elif "ImageStroke" in stroke.name:
 			# Type
 			file.store_8(TYPE_IMAGE_STROKE)
+
 			# Width
 			file.store_32(stroke.get_rect().size[0])
+
 			# Height
 			file.store_32(stroke.get_rect().size[1])
+
 			# Position
 			file.store_float(stroke.global_position.x)
 			file.store_float(stroke.global_position.y)
-			# RGBA8 Image data
-			for byte in stroke.texture.get_data().get_data():
+
+			# Compressed array length
+			var compressed : PoolByteArray = stroke.texture.get_data().get_data().compress(COMPRESSION_METHOD)
+			file.store_32(compressed.size())
+
+			# Compressed RGBA8 image data
+			for byte in compressed:
 				file.store_8(byte)
 
 	# Done
@@ -138,10 +146,16 @@ static func load_project(project: Project) -> void:
 				image_stroke.position.x = file.get_float()
 				image_stroke.position.y = file.get_float()
 
-				# RGBA8 Image data
+				# Compressed array length
+				var compressed_len := file.get_32()
+
+				# Decompressed RGBA8 image data
 				var pbarray = PoolByteArray()
-				for _i in range(0, width*height*4):
+				for _i in range(0, compressed_len):
 					pbarray.append(file.get_8())
+
+				# RGBA8 image
+				pbarray = pbarray.decompress(width*height*4, COMPRESSION_METHOD)
 				var image = Image.new()
 				image.create_from_data(width, height, false, Image.FORMAT_RGBA8, pbarray)
 				print("Size from image: %s" % str(image.get_size()))
