@@ -11,6 +11,14 @@ var _camera: Camera2D
 var _grid_size := Config.DEFAULT_GRID_SIZE
 var _grid_color: Color
 
+var _major_grid_ver_scale := 20.0
+var _major_grid_hor_scale := 20.0 * sqrt(2)
+var _major_grid_width := 10.0
+
+var _minor_grid_ver_scale := 1.0
+var _minor_grid_hor_scale := 1.0 * sqrt(2)
+var _minor_grid_width := 1.0
+
 # -------------------------------------------------------------------------------------------------
 func _ready():
 	_camera = get_node(camera_path)
@@ -52,15 +60,27 @@ func _draw() -> void:
 		grid_size *= 10
 	elif zoom > 5:
 		grid_size *= 5
+
+	# Major Grid: Vertical lines
+	var major_start_index := int((1.0 / _major_grid_ver_scale) * (offset.x - size.x) / grid_size) - 1
+	var major_end_index := int((1.0 / _major_grid_ver_scale) * (size.x + offset.x) / grid_size) + 1
+	for i in range(major_start_index, major_end_index):
+		draw_line(Vector2(_major_grid_ver_scale * i * grid_size, offset.y + size.y), Vector2(_major_grid_ver_scale * i * grid_size, offset.y - size.y), _grid_color, _major_grid_width)
 	
-	# Vertical lines
-	var start_index := int((offset.x - size.x) / grid_size) - 1
-	var end_index := int((size.x + offset.x) / grid_size) + 1
-	for i in range(start_index, end_index):
-		draw_line(Vector2(i * grid_size, offset.y + size.y), Vector2(i * grid_size, offset.y - size.y), _grid_color)
+	# Major Grid: Horizontal lines
+	major_start_index = int((1.0 / _major_grid_hor_scale) * (offset.y - size.y) / grid_size) - 1
+	major_end_index = int((1.0 / _major_grid_hor_scale) * (size.y + offset.y) / grid_size) + 1
+	for i in range(major_start_index, major_end_index):
+		draw_line(Vector2(offset.x + size.x, _major_grid_hor_scale * i * grid_size), Vector2(offset.x - size.x, _major_grid_hor_scale * i * grid_size), _grid_color, _major_grid_width)
+
+	# Minor Grid: Vertical lines
+	var minor_start_index := int((1.0 / _minor_grid_ver_scale) * (offset.x - size.x) / grid_size) - 1
+	var minor_end_index := int((1.0 / _minor_grid_ver_scale) * (size.x + offset.x) / grid_size) + 1
+	for i in range(minor_start_index, minor_end_index):
+		draw_line(Vector2(_minor_grid_ver_scale * i * grid_size, offset.y + size.y), Vector2(_minor_grid_ver_scale * i * grid_size, offset.y - size.y), _grid_color, _minor_grid_width)
 	
-	# Horizontal lines
-	start_index = int((offset.y - size.y) / grid_size) - 1
-	end_index = int((size.y + offset.y) / grid_size) + 1
-	for i in range(start_index, end_index):
-		draw_line(Vector2(offset.x + size.x, i * grid_size), Vector2(offset.x - size.x, i * grid_size), _grid_color)
+	# Minor Grid: Horizontal lines
+	minor_start_index = int((1.0 / _minor_grid_hor_scale) * (offset.y - size.y) / grid_size) - 1
+	minor_end_index = int((1.0 / _minor_grid_hor_scale) * (size.y + offset.y) / grid_size) + 1
+	for i in range(minor_start_index, minor_end_index):
+		draw_line(Vector2(offset.x + size.x, _minor_grid_hor_scale * i * grid_size), Vector2(offset.x - size.x, _minor_grid_hor_scale * i * grid_size), _grid_color, _minor_grid_width)
