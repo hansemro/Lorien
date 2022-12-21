@@ -18,7 +18,6 @@ onready var _strokes_parent: Node2D = $Viewport/Strokes
 onready var _camera: Camera2D = $Viewport/Camera2D
 onready var _viewport: Viewport = $Viewport
 onready var _grid: InfiniteCanvasGrid = $Viewport/Grid
-onready var _gdclip: Node = $GDClip
 
 var info := Types.CanvasInfo.new()
 var _is_enabled := false
@@ -33,6 +32,21 @@ var _player_enabled := false
 var _colliders_enabled := false
 var _optimizer: BrushStrokeOptimizer
 var _scale := Config.DEFAULT_UI_SCALE
+
+# -------------------------------------------------------------------------------------------------
+enum GDCLIP_STATE {
+	IDLE,
+	SIZE_LOAD,
+	SIZE_READY,
+	IMAGE_LOAD,
+	IMAGE_READY
+}
+
+onready var _gdclip: Node = $GDClip
+onready var _gdclip_thread: Thread = Thread.new()
+var _gdclip_state = GDCLIP_STATE.IDLE
+var _image_size: PoolIntArray
+var _image_pos: Vector2
 
 # -------------------------------------------------------------------------------------------------
 func _ready():
@@ -83,23 +97,43 @@ func _process_event(event: InputEvent) -> void:
 		if _active_tool != _selection_tool:
 			paste_image()
 
-# -------------------------------------------------------------------------------------------------
-func paste_image() -> void:
-	assert(_gdclip)
-	print("GDClip Paste Action")
-	print("GDClip Library Version: " + _gdclip.get_version())
-	if _gdclip.has_image():
-		var image_byte_array = _gdclip.get_image_as_pbarray()
-		var size = _gdclip.get_image_size()
+	if _gdclip_state == GDCLIP_STATE.SIZE_LOAD:
+		if _gdclip_thread.is_active() and not _gdclip_thread.is_alive():
+			_gdclip_state = GDCLIP_STATE.SIZE_READY
+	elif _gdclip_state == GDCLIP_STATE.SIZE_READY:
+		_image_size = _gdclip_thread.wait_to_finish()
+		_gdclip_state = GDCLIP_STATE.IMAGE_LOAD
+		_gdclip_thread.start(_gdclip, "get_image_as_pbarray")
+	elif _gdclip_state == GDCLIP_STATE.IMAGE_LOAD:
+		if _gdclip_thread.is_active() and not _gdclip_thread.is_alive():
+			_gdclip_state = GDCLIP_STATE.IMAGE_READY
+	elif _gdclip_state == GDCLIP_STATE.IMAGE_READY:
 		var sprite = IMAGE_STROKE.instance()
 		var texture = ImageTexture.new()
 		var image = Image.new()
-		image.create_from_data(size[0], size[1], false, Image.FORMAT_RGBA8, image_byte_array)
+		_gdclip_state = GDCLIP_STATE.IDLE
+		var image_byte_array = _gdclip_thread.wait_to_finish()
+		image.create_from_data(_image_size[0], _image_size[1], false, Image.FORMAT_RGBA8, image_byte_array)
 		print("Size from image: %s" % str(image.get_size()))
 		texture.create_from_image(image)
 		sprite.set_texture(texture)
-		sprite.position = _brush_tool._cursor.global_position
+		sprite.position = _image_pos
 		_add_undoredo_action_for_image_paste(sprite)
+
+# -------------------------------------------------------------------------------------------------
+func paste_image() -> void:
+	assert(_gdclip)
+	if _gdclip_state == GDCLIP_STATE.IDLE:
+		print("GDClip Paste Action")
+		print("GDClip Library Version: " + _gdclip.get_version())
+		if _gdclip.has_image():
+			_image_pos = _brush_tool._cursor.global_position
+			_gdclip_state = GDCLIP_STATE.SIZE_LOAD
+			_gdclip_thread.start(_gdclip, "get_image_size")
+		else:
+			print("No image in clipboard")
+	else:
+		print("There is already an active paste process")
 
 # -------------------------------------------------------------------------------------------------
 func add_image(image_sprite: Sprite) -> void:
